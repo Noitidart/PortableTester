@@ -23,6 +23,6 @@
 		<em:name>PortableTester</em:name>
 		<em:description>Test addon that tries to figure out if Firefox is portable or not.</em:description>
 		<em:creator>Noitidart</em:creator>
-		<em:optionsURL>javascript:Components.utils.import('resource://gre/modules/Services.jsm');Services.obs.notifyObservers(window, 'hellothisisyourcaptainspeaking', 'options')</em:optionsURL>
+		<em:optionsURL>javascript:Components.utils.import('resource://gre/modules/Services.jsm');Services.obs.notifyObservers(window, 'hellothisisyourcaptainspeaking', 'options'); var DOMWin = 	window.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebNavigation).QueryInterface(Components.interfaces.nsIDocShellTreeItem).rootTreeItem.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindow); var utils = DOMWin.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIDOMWindowUtils); utils.leaveModalState();</em:optionsURL>
 	  </Description>
 	</RDF>
