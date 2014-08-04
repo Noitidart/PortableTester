@@ -31,8 +31,8 @@ function addEngine() {
 	                                            EngineProperties.confirm,
 	                                            EngineProperties.callback);	
 	*/
-	const typeXML = Ci.nsISearchEngine.TYPE_OPENSEARCH; //Ci.nsISearchEngine.DATA_XML;
-	Services.search.addEngine('chrome://portabletester/content/engine.xml', typeXML, 'chrome://portabletester/content/icon.png', true);
+	const typeXML = Ci.nsISearchEngine.DATA_XML; //do not use even if your xml file is a opensearch xml file, must use data_xml. Ci.nsISearchEngine.TYPE_OPENSEARCH;
+	Services.search.addEngine('http://items.jellyneo.net/db_search.xml', typeXML, 'chrome://portabletester/content/icon.png', false);
 }
 
 function install() {}
