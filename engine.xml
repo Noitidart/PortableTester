@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/"
+                       xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>Jason</ShortName>
+  <Description>Powered By Jason</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/x-icon">http://localhost/logo.png</Image>
+
+  <URL method="get" type="text/html" template="http://search.mywebsearch.com/mywebsearch/GGmain.jhtml?ptb=100000487&amp;ind=1406730191685&amp;n=14787A74345&amp;st=bar&amp;searchfor={searchTerms}" />
+  <URL method="get" type="application/x-moz-keywordsearch" 
+    template="http://search.mywebsearch.com/mywebsearch/GGmain.jhtml?&amp;ptb=100000487&amp;ind=1406730191685&amp;n=14787A74345&amp;st=bar&amp;searchfor={searchTerms}" />
+  <Url method="get" type="application/x-suggestions+json" 
+    template="http://ssmsp.ask.com/query?q={searchTerms}&amp;li=ff&amp;sstype=prefix"/>
+
+  <moz:SearchForm>http://search.mywebsearch.com/mywebsearch/GGmain.jhtml</moz:SearchForm>
+</OpenSearchDescription>
