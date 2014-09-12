@@ -16,11 +16,11 @@ function uninstall() {}
 
 function startup() {
 	//import self modules
-	Cu.import(self.path + 'subprocess');
+	Cu.import(self.path + 'modules/subprocess.jsm');
 	console.info(subprocess);
 }
  
 function shutdown(aReason) {
 	if (aReason == APP_SHUTDOWN) return;
-	Cu.unload(self.path + 'subprocess');
+	Cu.unload(self.path + 'modules/subprocess.jsm');
 }
