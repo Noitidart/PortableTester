@@ -8,49 +8,13 @@ const self = {
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/devtools/Console.jsm');
 Cu.import('resource://gre/modules/FileUtils.jsm');
+Cu.import("resource://gre/modules/commonjs/sdk/system/child_process/subprocess.js");
 
-function addEngine() {
-	
-	/*
-	var browserSearchService = Components
-	        .classes["@mozilla.org/browser/search-service;1"]
-	        .getService(Components.interfaces.nsIBrowserSearchService);
-	*/
-	var EngineProperties = {
-	                xml :   'chrome://portabletester/content/engine.xml',
-	                dataType: 1, //use Ci.nsISearchEngine.DATA_XML which is 1 instead of Ci.nsISearchEngine.TYPE_OPENSEARCH which is 3
-	                iconURL : 'chrome://portabletester/content/icon.png',
-	                confirm : false,
-	                callback : function(){
-	                    console.log('Jason is the greatest');           
-	                }
-	            }
-	/*
-	browserSearchService.addEngine( EngineProperties.xml,
-	                                            EngineProperties.dataType,
-	                                            EngineProperties.iconURL,
-	                                            EngineProperties.confirm,
-	                                            EngineProperties.callback);	
-	*/
-	Services.search.addEngine( EngineProperties.xml,
-	                                            EngineProperties.dataType,
-	                                            EngineProperties.iconURL,
-	                                            EngineProperties.confirm,
-	                                            EngineProperties.callback);	
-}
 
 function install() {}
 
 function uninstall() {}
 
-function startup() {
-	console.time('starting addEngine');
-	try {
-		addEngine();
-	} finally {
-		console.timeEnd('starting addEngine');
-	}
-}
+function startup() {}
  
-function shutdown() {
-}
+function shutdown() {}
