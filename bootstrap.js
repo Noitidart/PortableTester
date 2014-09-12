@@ -8,13 +8,19 @@ const self = {
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/devtools/Console.jsm');
 Cu.import('resource://gre/modules/FileUtils.jsm');
-Cu.import("resource://gre/modules/commonjs/sdk/system/child_process/subprocess.js");
 
 
 function install() {}
 
 function uninstall() {}
 
-function startup() {}
+function startup() {
+	//import self modules
+	Cu.import(self.path + 'modules/subprocess.jsm');
+	console.info(subprocess);
+}
  
-function shutdown() {}
+function shutdown(aReason) {
+	if (aReason == APP_SHUTDOWN) return;
+	Cu.unload(self.path + 'modules/subprocess.jsm');
+}
