@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <vbox xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<setting title="Other Preference Example" type="file">
+	<setting title="Image Upload" type="file" pref="extensions.PortableTester@jetpack.image_upload" oninputchanged="alert('path of image is:' + this.value + '\nyou can access this image from your addon or anywhere else by getting the pref value so like this:\n`Services.prefs.getCharPref(\'extensions.PortableTester@jetpack.image_upload\') == `' + Services.prefs.getCharPref('extensions.PortableTester@jetpack.image_upload'))">
 		Select image to upload
 	</setting>
 </vbox>
