@@ -14,8 +14,8 @@ var observers = {
             var requestUrl = httpChannel.URI.spec;
             for (var i=0; i<urls_block.length; i++) {
              if (requestUrl.indexOf(urls_block[i]) > -1) {
-              httpChannel.cancel(Cr.NS_BINDING_ABORTED); //this aborts the load
-              //httpChannel.redirectTo(Services.io.newURI('http://www.bing.com', null, null)); //can redirect with this line //may need to comment out the abort line before this if you want to redirect
+              //httpChannel.cancel(Cr.NS_BINDING_ABORTED); //this aborts the load
+              httpChannel.redirectTo(Services.io.newURI('data:text,url_blocked', null, null)); //can redirect with this line, if dont want to redirect and just block, then uncomment this line and comment out line above (line 17)
              }
             }
         },
