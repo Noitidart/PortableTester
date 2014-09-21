@@ -7,7 +7,7 @@ var urls_block = [ //if urls ontain any of these elements they will be blocked o
 ];
 
 var observers = {
-    'http-on-examine-response': {
+    'http-on-modify-request': {
         observe: function (aSubject, aTopic, aData) {
             console.info('http-on-modify-request: aSubject = ' + aSubject + ' | aTopic = ' + aTopic + ' | aData = ' + aData);
             var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
