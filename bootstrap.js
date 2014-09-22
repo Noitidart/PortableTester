@@ -16,6 +16,7 @@ var observers = {
              if (requestUrl.indexOf(urls_block[i]) > -1) {
               //httpChannel.cancel(Cr.NS_BINDING_ABORTED); //this aborts the load
               httpChannel.redirectTo(Services.io.newURI('data:text,url_blocked', null, null)); //can redirect with this line, if dont want to redirect and just block, then uncomment this line and comment out line above (line 17)
+              break;
              }
             }
         },
