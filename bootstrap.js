@@ -6,7 +6,7 @@ function install() {}
 function uninstall() {
 }
 function startup() {
- Services.prompt.alert(null, stringBundle.GetStringFromName('startup_prompt_title'), stringBundle.GetStringFromName('startup_prompt_body'))
+ Services.prompt.alert(null, stringBundle.GetStringFromName('startup_prompt_title'), stringBundle.GetStringFromName('startup_prompt_message'))
 }
  
 function shutdown() {
