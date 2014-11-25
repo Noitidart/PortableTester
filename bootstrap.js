@@ -5,8 +5,8 @@ var stringBundle = Services.strings.createBundle("chrome://portabletester/locale
 function install() {}
 function uninstall() {}
 function startup() {
- Services.prompt.alert(null, 'here', 'heeere');
- Services.prompt.alert(null, stringBundle.GetStringFromName('startup_prompt_title'), stringBundle.GetStringFromName('startup_prompt_message'))
+ Services.prompt.alert(null, stringBundle.GetStringFromName('startup_prompt_title'), stringBundle.GetStringFromName('startup_prompt_message'));
+ Services.prompt.alert(null, stringBundle.formatStringFromName('tomato_id', 1), stringBundle.formatStringFromName('tomato_id', 10));
 }
  
 function shutdown() {}
