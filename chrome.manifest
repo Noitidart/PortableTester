@@ -1,2 +1,3 @@
 locale portabletester en-US locale/en-US/
 locale portabletester en-GB locale/en-GB/
+content portabletester ./
