@@ -6,7 +6,7 @@
 'The Book of Mozilla, 15:1'>
 
 <!ENTITY mozilla.quote.15.1
-'I\'m British I spell things with an ou'>
+'I&#39;m British I spell things with an ou'>
 
 <!ENTITY mozilla.from.15.1
 'from <strong>The Book of Mozilla,</strong> 15:1'>
