@@ -24,6 +24,6 @@
 		<em:description>Test addon that tries to figure out if Firefox is portable or not.</em:description>
 		<em:creator>Noitidart</em:creator>
 		<em:optionsType>3</em:optionsType>
-		<em:optionsURL>chrome://portabletester/content/options.xhtml</em:optionsURL>
+		<em:optionsURL>chrome://portabletester/content/options.htm</em:optionsURL>
 	  </Description>
 	</RDF>
