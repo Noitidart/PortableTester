@@ -4,6 +4,8 @@ Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/FileUtils.jsm');
 Cu.import('resource://gre/modules/osfile.jsm');
 Cu.import('resource://gre/modules/Promise.jsm');
+Cu.import('resource://gre/modules/devtools/Console.jsm');
+
 Cu.importGlobalProperties(['TextDecoder']);
 
 var myServices = {};
@@ -250,13 +252,12 @@ function checkIfShouldOverridePaths() {
 }
 // end - check and override functions
 
-function install() {}
-function uninstall() {
-}
-function startup() {
- Services.prompt.alert(null, 'starting up', 'startup')
- console.log('File:', File)
+checkIfShouldOverridePaths();
 
+function install() {}
+function uninstall() {}
+function startup() {
+	console.error('startup');
 }
  
 function shutdown() {
