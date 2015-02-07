@@ -1,4 +1,4 @@
-const {classes: Cc, interfaces: Ci, utils: Cu} = Components;
+const {classes: Cc, interfaces: Ci, utils: Cu, results: Cr} = Components;
 
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/FileUtils.jsm');
@@ -201,7 +201,7 @@ function overrideSpecialPaths(pathsFileContentsJson) {
 			if (aIID.equals(Ci.nsIDirectoryServiceProvider) || aIID.equals(Ci.nsISupports)) {
 				return this;
 			}
-			throw Cr.NS_ERROR_NO_INTERFACE;
+			console.error('override DirProvider error:', Cr.NS_ERROR_NO_INTERFACE, 'aIID:', aIID);
 		}
 	};
 
