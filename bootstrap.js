@@ -222,33 +222,45 @@ function overrideSpecialPaths(pathsFileContentsJson) {
 
 function checkIfShouldOverridePaths() {
 	//doesnt retrurn anything, can set global var though if overrid or not
-	var path_to_ThisPathsFile = OS.Path.join(Services.dirsvc.get('GreBinD', Ci.nsIFile).path, 'profilist-main-paths.json');
-	var promise_readThisPathsFile = read_encoded(path_to_ThisPathsFile, {encoding:'utf-8'});
-	promise_readThisPathsFile.then(
-		function(aVal) {
-			console.log('Fulfilled - promise_readThisPathsFile - ', aVal);
-			console.log('need to override, starting now');
-			overrideSpecialPaths(JSON.parse(aVal));
-			//deferred_readThenWritePlist.resolve();
-		},
-		function(aReason) {
-			var rejObj = {
-				promiseName: 'promise_readThisPathsFile',
-				aReason: aReason
-			};
-			if (rejObj.aReason.becauseNoSuchFile) {
-				console.log('Rejected - ' + rejObj.promiseName + ' - BUT if it doesnt exist that just means we dont need to override paths, so this is fine', rejObj);
-				return;
+	var pathsPrefContentsJson;
+	try {
+		pathsPrefContentsJson = Services.prefs.getCharPref('extension.Profilist@jetpack.mac-paths-fixup');
+	} catch (ex if ex.result == Cr.NS_ERROR_UNEXPECTED) {
+		// Cr.NS_ERROR_UNEXPECTED is what is thrown when pref doesnt exist
+	}
+	
+	if (pathsPrefContentsJson) {
+	} else {
+		//pref doesnt exist so read from file
+		var path_to_ThisPathsFile = OS.Path.join(Services.dirsvc.get('GreBinD', Ci.nsIFile).path, 'profilist-main-paths.json');
+		var promise_readThisPathsFile = read_encoded(path_to_ThisPathsFile, {encoding:'utf-8'});
+		promise_readThisPathsFile.then(
+			function(aVal) {
+				console.log('Fulfilled - promise_readThisPathsFile - ', aVal);
+				console.log('need to override, starting now');
+				overrideSpecialPaths(JSON.parse(aVal)); //lets go stragiht to override, we'll right the pref afterwards, just to save a ms or two
+				Services.prefs.setCharPref('extension.Profilist@jetpack.mac-paths-fixup', aVal); // im not going to set a default on this, because if i do then on startup the pref wont exist so it would have to written first, which would require me to read the file on disk, which we want to avoid
+				//deferred_readThenWritePlist.resolve();
+			},
+			function(aReason) {
+				var rejObj = {
+					promiseName: 'promise_readThisPathsFile',
+					aReason: aReason
+				};
+				if (rejObj.aReason.becauseNoSuchFile) {
+					console.log('Rejected - ' + rejObj.promiseName + ' - BUT if it doesnt exist that just means we dont need to override paths, so this is fine', rejObj);
+					return;
+				}
+				console.error('Rejected - ' + rejObj.promiseName + ' - ', rejObj);
+				//deferred_readThenWritePlist.reject(rejObj);
 			}
-			console.error('Rejected - ' + rejObj.promiseName + ' - ', rejObj);
-			//deferred_readThenWritePlist.reject(rejObj);
-		}
-	).catch(
-		function(aCaught) {
-			console.error('Caught - promise_readThisPathsFile - ', aCaught);
-			throw aCaught;
-		}
-	);
+		).catch(
+			function(aCaught) {
+				console.error('Caught - promise_readThisPathsFile - ', aCaught);
+				throw aCaught;
+			}
+		);
+	}
 }
 // end - check and override functions
 
