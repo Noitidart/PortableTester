@@ -326,7 +326,7 @@ function checkIfShouldOverridePaths() {
 }
 // end - check and override functions
 
-checkIfShouldOverridePaths();
+checkIfShouldOverridePaths(); //its good idea to run this before startup, evne though there is only few ms between here and startup exec, its just that i did see when i ran this here, i saw the log of "no need for fixup ... absolute path..." message before startup exec time log, BUT after checkOverride exec time when i had checkOverride before the starutp
 
 function install() {}
 function uninstall() {}
