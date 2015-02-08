@@ -1,4 +1,10 @@
 const {classes: Cc, interfaces: Ci, utils: Cu, results: Cr} = Components;
+const self = {
+	name: 'Profilist',
+	id: 'Profilist@jetpack',
+	chrome_path: 'chrome://profilist/content/',
+	aData: 0,
+};
 
 Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/FileUtils.jsm');
@@ -11,6 +17,24 @@ Cu.importGlobalProperties(['TextDecoder']);
 var myServices = {};
 Cu.import('resource://gre/modules/XPCOMUtils.jsm');
 XPCOMUtils.defineLazyGetter(myServices, 'ds', function () { return Services.dirsvc.QueryInterface(Ci.nsIDirectoryService) });
+
+// start fake bundleService
+myServices.stringBundle = {
+	GetStringFromName: function(nam) {
+		switch (nam) {
+			case 'mac-paths-override-prompt-text':
+				return 'Restart Recommended';
+				break;
+		switch (nam) {
+			case 'mac-paths-override-prompt-title':
+				return 'This is the first run of ' + self.name + ' in this profile via Mac OS X shortcut. Firefox needs to restart for changes to take complete affect.';
+				break;
+			default:
+				throw new Error('nam not found in  bundle');
+		}
+	}
+};
+// end fake bundleService
 
 // start - helper functions
 var vcLs30; //jsBool for if this ff version is < 30
@@ -251,7 +275,21 @@ function checkIfShouldOverridePaths() {
 				console.log('need to override, starting now');
 				overrideSpecialPaths(JSON.parse(aVal)); //lets go stragiht to override, we'll right the pref afterwards, just to save a ms or two
 				Services.prefs.setCharPref('extension.Profilist@jetpack.mac-paths-fixup', aVal); // im not going to set a default on this, because if i do then on startup the pref wont exist so it would have to written first, which would require me to read the file on disk, which we want to avoid
+				console.log('pref written');
 				// do prompt
+				var tempVar = 'rawr';
+				var confirmArgs = {
+					aParent:	(tempVar = Services.wm.getMostRecentWindow('navigator:browser')) ? tempVar : Services.wm.getMostRecentWindow(null), // this line tries to get most recent browser win, if found it uses then, else if goes with most recent window null, and if that finds othing then aParent is null, which is an acceptable value // if dont use parenthesis here tempVar is whatever the last value of tempVar was
+					aDialogTitle:	self.name + ' - ' + myServices.stringBundle.GetStringFromName('mac-paths-override-prompt-title'),
+					aText:		myServices.stringBundle.GetStringFromName('mac-paths-override-prompt-text'),
+					aButton0Title:	'Restart',
+					aButton1Title:	'Not Now',
+					aButton2Title:	null,
+					aCheckMsg:	null, //display no check box
+					aCheckState:	{} // if want default check state, set value key to true or false
+				};
+				confirmArgs.aButtonFlags = Services.prompt.BUTTON_POS_0 * Services.prompt.BUTTON_TITLE_IS_STRING + Services.prompt.BUTTON_POS_1 * Services.prompt.BUTTON_TITLE_IS_STRING;
+				var rez_confirmEx = Services.prompt.confirmEx(null, confirmArgs.aDialogTitle, confirmArgs.aText, confirmArgs.aButtonFlags, confirmArgs.aButton0Title, confirmArgs.aButton1Title, confirmArgs.aButton2Title, confirmArgs.aCheckMsg, confirmArgs.aCheckState);
 				//deferred_readThenWritePlist.resolve();
 			},
 			function(aReason) {
