@@ -24,11 +24,12 @@ myServices.stringBundle = {
 		switch (nam) {
 			case 'mac-paths-override-prompt-text':
 				return 'Restart Recommended';
-				break;
-		switch (nam) {
 			case 'mac-paths-override-prompt-title':
 				return 'This is the first run of ' + self.name + ' in this profile via Mac OS X shortcut. Firefox needs to restart for changes to take complete affect.';
-				break;
+			case 'restart':
+				return 'Restart';
+			case 'not-now':
+				return 'Not Now'
 			default:
 				throw new Error('nam not found in  bundle');
 		}
@@ -282,14 +283,24 @@ function checkIfShouldOverridePaths() {
 					aParent:	(tempVar = Services.wm.getMostRecentWindow('navigator:browser')) ? tempVar : Services.wm.getMostRecentWindow(null), // this line tries to get most recent browser win, if found it uses then, else if goes with most recent window null, and if that finds othing then aParent is null, which is an acceptable value // if dont use parenthesis here tempVar is whatever the last value of tempVar was
 					aDialogTitle:	self.name + ' - ' + myServices.stringBundle.GetStringFromName('mac-paths-override-prompt-title'),
 					aText:		myServices.stringBundle.GetStringFromName('mac-paths-override-prompt-text'),
-					aButton0Title:	'Restart',
-					aButton1Title:	'Not Now',
+					aButton0Title:	myServices.stringBundle.GetStringFromName('restart'),
+					aButton1Title:	myServices.stringBundle.GetStringFromName('not-now'),
 					aButton2Title:	null,
 					aCheckMsg:	null, //display no check box
 					aCheckState:	{} // if want default check state, set value key to true or false
 				};
 				confirmArgs.aButtonFlags = Services.prompt.BUTTON_POS_0 * Services.prompt.BUTTON_TITLE_IS_STRING + Services.prompt.BUTTON_POS_1 * Services.prompt.BUTTON_TITLE_IS_STRING;
 				var rez_confirmEx = Services.prompt.confirmEx(null, confirmArgs.aDialogTitle, confirmArgs.aText, confirmArgs.aButtonFlags, confirmArgs.aButton0Title, confirmArgs.aButton1Title, confirmArgs.aButton2Title, confirmArgs.aCheckMsg, confirmArgs.aCheckState);
+				if (rez_confirmEx === 0) {
+					if (rez_confirmEx === 0) {
+						var cancelQuit = Cc['@mozilla.org/supports-PRBool;1'].createInstance(Ci.nsISupportsPRBool);
+						Services.obs.notifyObservers(cancelQuit, 'quit-application-requested', null);
+						if (!cancelQuit.data) {
+							Services.obs.notifyObservers(null, 'quit-application-granted', null);
+							Services.startup.quit(Ci.nsIAppStartup.eAttemptQuit | Ci.nsIAppStartup.eRestart);
+						}
+					}
+				}
 				//deferred_readThenWritePlist.resolve();
 			},
 			function(aReason) {
