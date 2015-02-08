@@ -119,7 +119,9 @@ function read_encoded(path, options) {
 
 // start - check and override functions
 // start - for use in dirProvider, getFile
+var overidingDirProvider;
 function overrideSpecialPaths(pathsFileContentsJson) {
+	// returns nothing
 	var nsIFile_origAlias = {};
 	
 	var aliasAppPath = Services.dirsvc.get('XREExeF', Ci.nsIFile).parent.parent.parent.path;
@@ -189,7 +191,7 @@ function overrideSpecialPaths(pathsFileContentsJson) {
 		// not yet cross checked with custom path
 	};
 	
-	var dirProvider = {
+	overidingDirProvider = {
 		getFile: function(aProp, aPersistent) {
 			aPersistent.value = true;
 			if (replaceTypes[specialKeyReplaceType[aProp]]) {
@@ -214,14 +216,20 @@ function overrideSpecialPaths(pathsFileContentsJson) {
 		*/
 		myServices.ds.QueryInterface(Ci.nsIProperties).undefine(key);
 	}
-	myServices.ds.registerProvider(dirProvider);
+	myServices.ds.registerProvider(overidingDirProvider);
 	//myServices.ds.unregisterProvider(dirProvider);
 	console.log('oevrrid');
 }
 // end - for use in dirProvider, getFile
 
 function checkIfShouldOverridePaths() {
+	console.error('execing checkIfShouldOverridePaths(): ', new Date().toJSON());
 	//doesnt retrurn anything, can set global var though if overrid or not
+	// note: if the paths are already changed, and it does go the check file method, it will find that file doesnt exist so it wont override
+		// Rejected - promise_read - " Object { promiseName: "promise_read", aReason: Object } bootstrap.js:106
+		// "Rejected - promise_readThisPathsFile - BUT if it doesnt exist that just means we dont need to override paths, so this is fine" Object { promiseName: "promise_readThisPathsFile", aReason: Object }
+	// but if pref method we should check if 'profilist_data' is in like XREExeF and if it is then it should continue
+	// note: rather then check on override, im just unregistringProvider on shutdown, so on upgrade no need to check
 	var pathsPrefContentsJson;
 	try {
 		pathsPrefContentsJson = Services.prefs.getCharPref('extension.Profilist@jetpack.mac-paths-fixup');
@@ -230,8 +238,11 @@ function checkIfShouldOverridePaths() {
 	}
 	
 	if (pathsPrefContentsJson) {
+		// actually forget it, just on shutdown i should unregister the dirProvider
+		overrideSpecialPaths(JSON.parse(pathsPrefContentsJson));
 	} else {
 		//pref doesnt exist so read from file
+		// if its going this way it means pref doesnt exist, so user should restart, so prompt asking if it should after done
 		var path_to_ThisPathsFile = OS.Path.join(Services.dirsvc.get('GreBinD', Ci.nsIFile).path, 'profilist-main-paths.json');
 		var promise_readThisPathsFile = read_encoded(path_to_ThisPathsFile, {encoding:'utf-8'});
 		promise_readThisPathsFile.then(
@@ -240,6 +251,7 @@ function checkIfShouldOverridePaths() {
 				console.log('need to override, starting now');
 				overrideSpecialPaths(JSON.parse(aVal)); //lets go stragiht to override, we'll right the pref afterwards, just to save a ms or two
 				Services.prefs.setCharPref('extension.Profilist@jetpack.mac-paths-fixup', aVal); // im not going to set a default on this, because if i do then on startup the pref wont exist so it would have to written first, which would require me to read the file on disk, which we want to avoid
+				// do prompt
 				//deferred_readThenWritePlist.resolve();
 			},
 			function(aReason) {
@@ -269,8 +281,13 @@ checkIfShouldOverridePaths();
 function install() {}
 function uninstall() {}
 function startup() {
-	console.error('startup');
+	console.error('execing startup(): ', new Date().toJSON());
 }
  
 function shutdown() {
+	if (aReason == APP_SHUTDOWN) { return; }
+	if (overidingDirProvider) {
+		// its not undefined, so it was registered
+		// in ureg because its needed so Profilist can upgrade gracefully
+	}
 }
