@@ -22,9 +22,9 @@ XPCOMUtils.defineLazyGetter(myServices, 'ds', function () { return Services.dirs
 myServices.stringBundle = {
 	GetStringFromName: function(nam) {
 		switch (nam) {
-			case 'mac-paths-override-prompt-text':
-				return 'Restart Recommended';
 			case 'mac-paths-override-prompt-title':
+				return 'Restart Recommended';
+			case 'mac-paths-override-prompt-text':
 				return 'This is the first run of ' + self.name + ' in this profile via Mac OS X shortcut. Firefox needs to restart for changes to take complete affect.';
 			case 'restart':
 				return 'Restart';
@@ -272,12 +272,13 @@ function checkIfShouldOverridePaths() {
 		var promise_readThisPathsFile = read_encoded(path_to_ThisPathsFile, {encoding:'utf-8'});
 		promise_readThisPathsFile.then(
 			function(aVal) {
+				console.error('read fullfilled: ', new Date().toJSON());
 				console.log('Fulfilled - promise_readThisPathsFile - ', aVal);
 				console.log('need to override, starting now');
 				overrideSpecialPaths(JSON.parse(aVal)); //lets go stragiht to override, we'll right the pref afterwards, just to save a ms or two
 				Services.prefs.setCharPref('extension.Profilist@jetpack.mac-paths-fixup', aVal); // im not going to set a default on this, because if i do then on startup the pref wont exist so it would have to written first, which would require me to read the file on disk, which we want to avoid
 				console.log('pref written');
-				// do prompt
+				// do prompt // i dont have to restart if this happens on startup of browser, but this is very rare for it to trigger on startup of browser, so dont bother testing
 				var tempVar = 'rawr';
 				var confirmArgs = {
 					aParent:	(tempVar = Services.wm.getMostRecentWindow('navigator:browser')) ? tempVar : Services.wm.getMostRecentWindow(null), // this line tries to get most recent browser win, if found it uses then, else if goes with most recent window null, and if that finds othing then aParent is null, which is an acceptable value // if dont use parenthesis here tempVar is whatever the last value of tempVar was
