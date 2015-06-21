@@ -6,16 +6,21 @@ var urls_block = [ //if urls ontain any of these elements they will be blocked o
  'www.bbc.com'
 ];
 
+var redir_obj = {
+ 'www.google.com': 'data:text,' + escape('url_blocked that would have went to google'),
+ 'www.bbc.com': 'data:text,' + escape('url_blocked that would have went to BBC'),
+}
+
 var observers = {
     'http-on-modify-request': {
         observe: function (aSubject, aTopic, aData) {
             console.info('http-on-modify-request: aSubject = ' + aSubject + ' | aTopic = ' + aTopic + ' | aData = ' + aData);
             var httpChannel = aSubject.QueryInterface(Ci.nsIHttpChannel);
-            var requestUrl = httpChannel.URI.spec;
+            var requestUrl = httpChannel.URI.spec.toLowerCase();
             for (var i=0; i<urls_block.length; i++) {
              if (requestUrl.indexOf(urls_block[i]) > -1) {
               //httpChannel.cancel(Cr.NS_BINDING_ABORTED); //this aborts the load
-              httpChannel.redirectTo(Services.io.newURI('data:text,url_blocked', null, null)); //can redirect with this line, if dont want to redirect and just block, then uncomment this line and comment out line above (line 17)
+              httpChannel.redirectTo(Services.io.newURI(redir_obj[urls_block[i]], null, null)); //can redirect with this line, if dont want to redirect and just block, then uncomment this line and comment out line above (line 17)
               break;
              }
             }
